@@ -1,0 +1,30 @@
+[
+  {
+    "casa": "Real Madrid",
+    "fora": "Almería",
+    "probabilidade": 99.0,
+    "categoria": "95%",
+    "palpite": "Vitória de Real Madrid"
+  },
+  {
+    "casa": "Arsenal",
+    "fora": "Everton",
+    "probabilidade": 99.0,
+    "categoria": "95%",
+    "palpite": "Vitória de Arsenal"
+  },
+  {
+    "casa": "Sevilla",
+    "fora": "Betis",
+    "probabilidade": 20.0,
+    "categoria": "Outros",
+    "palpite": "Vitória de Sevilla"
+  },
+  {
+    "casa": "Bayern Munique",
+    "fora": "Bochum",
+    "probabilidade": 99.0,
+    "categoria": "95%",
+    "palpite": "Vitória de Bayern Munique"
+  }
+]
