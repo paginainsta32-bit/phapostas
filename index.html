@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Apostas IA</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; }
+    h1 { text-align: center; color: #38bdf8; }
+    .nav-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+    .tab-btn { padding: 12px 24px; background: #1e293b; border: 1px solid #334155; color: #fff; cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 1rem; }
+    .tab-btn.active { background: #0284c7; border-color: #38bdf8; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; max-width: 900px; margin: 0 auto; }
+    .card { background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 8px; position: relative; }
+    .prob-tag { position: absolute; top: 15px; right: 15px; font-weight: bold; padding: 4px 10px; border-radius: 4px; font-size: 0.9rem; }
+    .c-95 { background: #15803d; color: #4ade80; }
+    .c-85 { background: #a16207; color: #facc15; }
+    .c-75 { background: #c2410c; color: #fb923c; }
+  </style>
+</head>
+<body>
+  <h1>🤖 Oportunidades Diárias da IA</h1>
+  
+  <!-- MENU DE NAVEGAÇÃO SEPARADO POR PORCENTAGEM -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="filtrar('95%')">Chances 95%</button>
+    <button class="tab-btn" onclick="filtrar('85%')">Chances 85%</button>
+    <button class="tab-btn" onclick="filtrar('75%')">Chances 75%</button>
+  </div>
+
+  <div id="container-jogos" class="grid"></div>
+
+  <script>
+    let jogos = [];
+
+    async function carregarDados() {
+      try {
+        const res = await fetch('dados_apostas.json');
+        jogos = await res.json();
+        filtrar('95%'); // Carrega a aba de 95% por padrão
+      } catch (e) {
+        document.getElementById('container-jogos').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Carregando ou nenhum jogo disponível hoje.</p>';
+      }
+    }
+
+    function filtrar(cat) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.includes(cat));
+      });
+
+      const filtrados = jogos.filter(j => j.categoria === cat);
+      const container = document.getElementById('container-jogos');
+      
+      if(filtrados.length === 0) {
+        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhuma oportunidade nesta faixa de porcentagem para hoje.</p>';
+        return;
+      }
+
+      container.innerHTML = filtrados.map(j => `
+        <div class="card">
+          <span class="prob-tag c-${j.categoria.replace('%','')}">${j.probabilidade}%</span>
+          <h3 style="margin:0 0 10px 0;">${j.casa} x ${j.fora}</h3>
+          <p style="margin:5px 0;"><strong>Palpite:</strong> ${j.palpite}</p>
+        </div>
+      `).join('');
+    }
+
+    carregarDados();
+  </script>
+</body>
+</html>
