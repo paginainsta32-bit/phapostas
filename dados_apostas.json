@@ -1,44 +1,62 @@
 [
   {
-    "casa": "Palmeiras",
-    "fora": "Cuiabá",
+    "casa": "Fluminense",
+    "fora": "Remo",
+    "liga": "Brasileirão Série A",
+    "data": "2026-08-22",
+    "horario": "19:00",
     "probabilidade": 100.0,
     "categoria": "95%",
-    "palpite": "Vitória do Palmeiras"
+    "palpite": "Vitória do Fluminense"
   },
   {
-    "casa": "Flamengo",
-    "fora": "Atlético-GO",
+    "casa": "Arsenal",
+    "fora": "Coventry City",
+    "liga": "Premier League",
+    "data": "2026-08-21",
+    "horario": "19:00",
     "probabilidade": 100.0,
     "categoria": "95%",
-    "palpite": "Vitória do Flamengo"
+    "palpite": "Vitória do Arsenal"
   },
   {
-    "casa": "Barcelona",
-    "fora": "Getafe",
-    "probabilidade": 79.0,
-    "categoria": "75%",
-    "palpite": "Vitória do Barcelona"
-  },
-  {
-    "casa": "Manchester City",
-    "fora": "Ipswich",
+    "casa": "Real Betis",
+    "fora": "Real Sociedad",
+    "liga": "La Liga",
+    "data": "2026-08-21",
+    "horario": "19:00",
     "probabilidade": 100.0,
     "categoria": "95%",
-    "palpite": "Vitória do Manchester City"
+    "palpite": "Vitória do Real Betis"
   },
   {
-    "casa": "Liverpool",
-    "fora": "Brentford",
-    "probabilidade": 52.0,
-    "categoria": "75%",
-    "palpite": "Vitória do Liverpool"
-  },
-  {
-    "casa": "Inter de Milão",
-    "fora": "Lecce",
+    "casa": "Udinese",
+    "fora": "Como",
+    "liga": "Serie A Italiana",
+    "data": "2026-08-22",
+    "horario": "16:30",
     "probabilidade": 100.0,
     "categoria": "95%",
-    "palpite": "Vitória do Inter de Milão"
+    "palpite": "Vitória do Udinese"
+  },
+  {
+    "casa": "Bayern Munich",
+    "fora": "Stuttgart",
+    "liga": "Bundesliga",
+    "data": "2026-08-28",
+    "horario": "18:30",
+    "probabilidade": 100.0,
+    "categoria": "95%",
+    "palpite": "Vitória do Bayern Munich"
+  },
+  {
+    "casa": "Sabah Baku",
+    "fora": "Hapoel Be'er Sheva",
+    "liga": "UEFA Champions League",
+    "data": "2026-08-25",
+    "horario": "16:45",
+    "probabilidade": 100.0,
+    "categoria": "95%",
+    "palpite": "Vitória do Sabah Baku"
   }
 ]
