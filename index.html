@@ -35,7 +35,7 @@
 
     async function carregarDados() {
       try {
-        const res = await fetch('dados_apostas.json');
+        const res = await fetch('dados_apostas.json?v=' + new Date().getTime());
         jogos = await res.json();
         filtrar('95%'); // Carrega a aba de 95% por padrão
       } catch (e) {
