@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "casa": "Palmeiras",
+    "fora": "Cuiabá",
+    "probabilidade": 100.0,
+    "categoria": "95%",
+    "palpite": "Vitória do Palmeiras"
+  },
+  {
+    "casa": "Flamengo",
+    "fora": "Atlético-GO",
+    "probabilidade": 100.0,
+    "categoria": "95%",
+    "palpite": "Vitória do Flamengo"
+  },
+  {
+    "casa": "Barcelona",
+    "fora": "Getafe",
+    "probabilidade": 79.0,
+    "categoria": "75%",
+    "palpite": "Vitória do Barcelona"
+  },
+  {
+    "casa": "Manchester City",
+    "fora": "Ipswich",
+    "probabilidade": 100.0,
+    "categoria": "95%",
+    "palpite": "Vitória do Manchester City"
+  },
+  {
+    "casa": "Liverpool",
+    "fora": "Brentford",
+    "probabilidade": 52.0,
+    "categoria": "75%",
+    "palpite": "Vitória do Liverpool"
+  },
+  {
+    "casa": "Inter de Milão",
+    "fora": "Lecce",
+    "probabilidade": 100.0,
+    "categoria": "95%",
+    "palpite": "Vitória do Inter de Milão"
+  }
+]
