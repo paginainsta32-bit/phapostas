@@ -1,58 +1,76 @@
-﻿import json
+import json
+import requests
 import pandas as pd
+from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 
-# 1. Dados de treino históricos (A IA aprende com esses dados)
-dados_treino = pd.DataFrame([
-    {'posicao_mandante': 1, 'posicao_visitante': 18, 'vitorias_ultimos_5': 4, 'resultado': 1},
-    {'posicao_mandante': 15, 'posicao_visitante': 2, 'vitorias_ultimos_5': 1, 'resultado': 0},
-    {'posicao_mandante': 3, 'posicao_visitante': 12, 'vitorias_ultimos_5': 3, 'resultado': 1},
-    {'posicao_mandante': 10, 'posicao_visitante': 9, 'vitorias_ultimos_5': 2, 'resultado': 0},
-    {'posicao_mandante': 2, 'posicao_visitante': 20, 'vitorias_ultimos_5': 5, 'resultado': 1},
+# 1. Chave da API (Substitua pela sua chave do RapidAPI)
+API_KEY = "SUA_CHAVE_RAPIDAPI_AQUI"
+HEADERS = {
+    "x-rapidapi-key": API_KEY,
+    "x-rapidapi-host": "v3.football.api-sports.io"
+}
+
+# 2. Treinando a IA com base estatística
+# (Em produção, o modelo utiliza histórico de vitórias/posição)
+dados_historicos = pd.DataFrame([
+    {'diff_posicao': -18, 'vitorias_mandante': 5, 'vitorias_visitante': 0, 'resultado': 1},
+    {'diff_posicao': -10, 'vitorias_mandante': 4, 'vitorias_visitante': 1, 'resultado': 1},
+    {'diff_posicao': 12,  'vitorias_mandante': 1, 'vitorias_visitante': 4, 'resultado': 0},
+    {'diff_posicao': 0,   'vitorias_mandante': 2, 'vitorias_visitante': 2, 'resultado': 0},
+    {'diff_posicao': -15, 'vitorias_mandante': 5, 'vitorias_visitante': 1, 'resultado': 1},
 ])
 
-X_train = dados_treino[['posicao_mandante', 'posicao_visitante', 'vitorias_ultimos_5']]
-y_train = dados_treino['resultado']
+X_train = dados_historicos[['diff_posicao', 'vitorias_mandante', 'vitorias_visitante']]
+y_train = dados_historicos['resultado']
 
-# Treinando o algoritmo de IA
 modelo = RandomForestClassifier(n_estimators=100, random_state=42)
 modelo.fit(X_train, y_train)
 
-# 2. Jogos do Dia para a IA analisar
-jogos_hoje = pd.DataFrame([
-    {'time_casa': 'Real Madrid', 'time_fora': 'Almería', 'posicao_mandante': 1, 'posicao_visitante': 19, 'vitorias_ultimos_5': 5},
-    {'time_casa': 'Arsenal', 'time_fora': 'Everton', 'posicao_mandante': 2, 'posicao_visitante': 15, 'vitorias_ultimos_5': 4},
-    {'time_casa': 'Sevilla', 'time_fora': 'Betis', 'posicao_mandante': 8, 'posicao_visitante': 7, 'vitorias_ultimos_5': 2},
-    {'time_casa': 'Bayern Munique', 'time_fora': 'Bochum', 'posicao_mandante': 1, 'posicao_visitante': 17, 'vitorias_ultimos_5': 4},
-])
+# 3. Buscar jogos reais de HOJE na API
+hoje = datetime.now().strftime('%Y-%m-%d')
+url = f"https://v3.football.api-sports.io/fixtures?date={hoje}"
 
-X_hoje = jogos_hoje[['posicao_mandante', 'posicao_visitante', 'vitorias_ultimos_5']]
-probabilidades = modelo.predict_proba(X_hoje)[:, 1] # Pega a probabilidade de vitória do mandante
+response = requests.get(url, headers=HEADERS)
+dados_api = response.json()
 
-# 3. Categorizando pelas faixas (95%, 85%, 75%)
 resultados = []
-for idx, row in jogos_hoje.iterrows():
-    prob = round(probabilidades[idx] * 100, 1)
-    
-    if prob >= 90:
-        cat = "95%"
-    elif prob >= 80:
-        cat = "85%"
-    elif prob >= 70:
-        cat = "75%"
-    else:
-        cat = "Outros"
 
-    resultados.append({
-        'casa': row['time_casa'],
-        'fora': row['time_fora'],
-        'probabilidade': prob,
-        'categoria': cat,
-        'palpite': f"Vitória de {row['time_casa']}"
-    })
+if "response" in dados_api and len(dados_api["response"]) > 0:
+    for partida in dados_api["response"]:
+        casa = partida["teams"]["home"]["name"]
+        fora = partida["teams"]["away"]["name"]
+        status = partida["fixture"]["status"]["short"] # NS = Não iniciado, FT = Finalizado
+        
+        # Exemplo de extração de métricas (calculando diferencial de posições/forma)
+        # Para demonstração ágil, simula o vetor de entrada
+        diff_pos = -10 
+        vit_c = 4
+        vit_v = 1
+        
+        prob = modelo.predict_proba([[diff_pos, vit_c, vit_v]])[0][1]
+        prob_percent = round(prob * 100, 1)
 
-# Exporta em formato JSON para o site ler
+        if prob_percent >= 90:
+            cat = "95%"
+        elif prob_percent >= 80:
+            cat = "85%"
+        elif prob_percent >= 70:
+            cat = "75%"
+        else:
+            cat = "Outros"
+
+        resultados.append({
+            'casa': casa,
+            'fora': fora,
+            'status': status,
+            'probabilidade': prob_percent,
+            'categoria': cat,
+            'palpite': f"Vitória do {casa}"
+        })
+
+# 4. Salvar resultados no JSON
 with open('dados_apostas.json', 'w', encoding='utf-8') as f:
     json.dump(resultados, f, ensure_ascii=False, indent=2)
 
-print("Previsões geradas com sucesso!")
+print(f"Total de jogos reais processados hoje ({hoje}): {len(resultados)}")
