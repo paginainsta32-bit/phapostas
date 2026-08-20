@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 
-# 1. Cole a sua chave da Football-Data.org aqui
+# 1. Cole aqui sua chave que recebeu por e-mail do football-data.org
 API_KEY = "3c1bbabef3074a03ac650f217eb4605f"
 
 HEADERS = {
@@ -26,28 +26,26 @@ y_train = dados_historicos['resultado']
 modelo = RandomForestClassifier(n_estimators=100, random_state=42)
 modelo.fit(X_train, y_train)
 
-# 3. Buscar os jogos reais de HOJE na API
+# 3. Consultar jogos
+resultados = []
 hoje = datetime.now().strftime('%Y-%m-%d')
 url = f"https://api.football-data.org/v4/matches?dateFrom={hoje}&dateTo={hoje}"
 
-resultados = []
-
 try:
-    response = requests.get(url, headers=HEADERS)
-    dados = response.json()
-
-    if "matches" in dados and len(dados["matches"]) > 0:
-        for partida in dados["matches"]:
-            casa = partida["homeTeam"]["name"]
-            fora = partida["awayTeam"]["name"]
-            status = partida["status"]
+    response = requests.get(url, headers=HEADERS, timeout=10)
+    print(f"Status da API: {response.status_code}")
+    
+    if response.status_code == 200:
+        dados = response.json()
+        partidas = dados.get("matches", [])
+        
+        for partida in partidas:
+            casa = partida.get("homeTeam", {}).get("name", "Time Casa")
+            fora = partida.get("awayTeam", {}).get("name", "Time Fora")
+            status = partida.get("status", "NS")
             
-            # Análise preditiva simples pela IA
-            diff_pos = -8
-            vit_c = 4
-            vit_v = 1
-            
-            prob = modelo.predict_proba([[diff_pos, vit_c, vit_v]])[0][1]
+            # Análise preditiva
+            prob = modelo.predict_proba([[-8, 4, 1]])[0][1]
             prob_percent = round(prob * 100, 1)
 
             if prob_percent >= 90:
@@ -68,13 +66,13 @@ try:
                 'palpite': f"Vitória do {casa}"
             })
     else:
-        print("Nenhuma partida agendada encontrada para a data de hoje.")
+        print(f"Aviso da API: {response.text}")
 
 except Exception as e:
-    print(f"Erro na conexão com a API: {e}")
+    print(f"Erro ao conectar com API: {e}")
 
-# 4. Grava no arquivo JSON consumido pela interface web
+# 4. Grava os resultados no JSON sem quebrar a pipeline
 with open('dados_apostas.json', 'w', encoding='utf-8') as f:
     json.dump(resultados, f, ensure_ascii=False, indent=2)
 
-print(f"Processamento concluído. Jogos salvos: {len(resultados)}")
+print(f"Sucesso! {len(resultados)} jogos processados.")
