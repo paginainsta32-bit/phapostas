@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.10'
 
-     - name: Instalar Dependencias
+      - name: Instalar Dependencias
         run: |
           pip install pandas scikit-learn requests
 
@@ -29,5 +29,5 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "bot@github.com"
           git add dados_apostas.json
-          git commit -m "Atualização automática de apostas diárias" || exit 0
+          git commit -m "Atualizacao automatica de apostas diarias" || exit 0
           git push
